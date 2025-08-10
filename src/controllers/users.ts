@@ -1,6 +1,7 @@
 import { createFactory } from "hono/factory";
 import { db } from "../db/drizzle.ts";
 import { usersTable } from "../db/schema.ts";
+import type { User } from "../types/user.ts";
 
 const factory = createFactory();
 
@@ -10,10 +11,10 @@ export const getUsers = factory.createHandlers(async (c) => {
 });
 
 export const insertUser = factory.createHandlers(async (c) => {
-  const mockUser: typeof usersTable.$inferInsert = {
-    username: "reece",
-    password: "password",
-  };
-  const user = await db.insert(usersTable).values(mockUser).returning();
+  const body = await c.req.json<User>();
+
+  const newUser: User = { username: body.username, password: body.password };
+  const user = await db.insert(usersTable).values(newUser).returning();
+
   return c.json(user);
 });
