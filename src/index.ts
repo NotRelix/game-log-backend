@@ -2,14 +2,13 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import "dotenv/config";
 import { drizzle } from "drizzle-orm/node-postgres";
+import users from "./routes/users.ts";
 
 const app = new Hono();
 
 const db = drizzle(process.env.DATABASE_URL!);
 
-app.get("/", (c) => {
-  return c.text("Hello Hono!");
-});
+app.route("/users", users);
 
 serve(
   {
