@@ -1,6 +1,6 @@
 import { createFactory } from "hono/factory";
 import { zValidator } from "@hono/zod-validator";
-import { userSchema } from "../types/user.ts";
+import { userSchema } from "../validators/user.ts";
 import { insertUser } from "../db/query.ts";
 
 const factory = createFactory();
