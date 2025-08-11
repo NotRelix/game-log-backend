@@ -1,18 +1,13 @@
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db } from "./drizzle.ts";
 import { usersTable } from "./schema.ts";
 import type { InsertUser, SelectUser } from "./types.ts";
 
-export const getUser = async (
-  username: string,
-  password: string
-): Promise<SelectUser | null> => {
+export const getUser = async (username: string): Promise<SelectUser | null> => {
   const user = await db
     .select()
     .from(usersTable)
-    .where(
-      and(eq(usersTable.username, username), eq(usersTable.password, password))
-    );
+    .where(eq(usersTable.username, username));
   return user[0] ?? null;
 };
 
