@@ -28,7 +28,7 @@ export const registerUser = factory.createHandlers(
       const { password, ...safeUser } = newUserResult;
       return c.json(safeUser);
     } catch (err) {
-      return c.json({ error: "Failed to register user: ", details: err });
+      return c.json({ error: "Failed to register user", details: err });
     }
   }
 );

@@ -43,3 +43,15 @@ export const insertPost = async (
   const post = await db.insert(postsTable).values(newPost).returning();
   return post[0] ?? null;
 };
+
+export const updatePost = async (
+  postId: number,
+  updated: Partial<InsertPost>
+): Promise<SelectPost | null> => {
+  const updatedPost = await db
+    .update(postsTable)
+    .set(updated)
+    .where(eq(postsTable.id, postId))
+    .returning();
+  return updatedPost[0] ?? null;
+};
