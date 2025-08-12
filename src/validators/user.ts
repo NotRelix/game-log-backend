@@ -8,5 +8,4 @@ export const userSchema = z.object({
 export const postSchema = z.object({
   title: z.string().max(255),
   body: z.string().max(5000),
-  userId: z.number(),
 });

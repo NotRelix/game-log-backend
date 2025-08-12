@@ -14,13 +14,18 @@ export const getPosts = factory.createHandlers(async (c) => {
 export const createPost = factory.createHandlers(
   zValidator("json", postSchema),
   async (c) => {
-    const body = await c.req.valid("json");
-    const newPost: InsertPost = {
-      title: body.title,
-      body: body.body,
-      userId: 1,
-    };
-    const post = await insertPost(newPost);
-    return c.json(post);
+    try {
+      const user = c.get("jwtPayload");
+      const body = await c.req.valid("json");
+      const newPost: InsertPost = {
+        title: body.title,
+        body: body.body,
+        userId: user.id,
+      };
+      const post = await insertPost(newPost);
+      return c.json(post);
+    } catch (err) {
+      return c.json({ error: "Failed to create post: ", err });
+    }
   }
 );
