@@ -60,6 +60,14 @@ export const editPost = factory.createHandlers(
       if (isNaN(postId)) {
         return c.json({ error: "Invalid post id" });
       }
+      const post = await getPost(postId);
+      if (!post) {
+        return c.json({ error: "Post doesn't exist " });
+      }
+      const user = c.get("jwtPayload");
+      if (post.userId !== user.id) {
+        return c.json({ error: "Unauthorized access" });
+      }
       const body = c.req.valid("json");
       const cleanPost = Object.fromEntries(
         Object.entries(body).filter(([_, v]) => v !== undefined)
