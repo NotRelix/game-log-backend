@@ -1,11 +1,12 @@
 import { createFactory } from "hono/factory";
 import type { InsertPost } from "../db/types.ts";
-import { insertPost } from "../db/query.ts";
+import { getAllPosts, insertPost } from "../db/query.ts";
 
 const factory = createFactory();
 
 export const getPosts = factory.createHandlers(async (c) => {
-  return c.json("getting posts");
+  const posts = await getAllPosts();
+  return c.json(posts);
 });
 
 export const createPost = factory.createHandlers(async (c) => {

@@ -23,6 +23,11 @@ export const insertUser = async (
   return user[0] ?? null;
 };
 
+export const getAllPosts = async (): Promise<SelectPost[] | null> => {
+  const posts = await db.select().from(postsTable);
+  return posts ?? null;
+};
+
 export const insertPost = async (
   newPost: InsertPost
 ): Promise<SelectPost | null> => {
