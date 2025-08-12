@@ -1,8 +1,8 @@
 import { Hono } from "hono";
-import { loginUser } from "../controllers/login.ts";
+import { loginUserHandler } from "../controllers/login.ts";
 
 const app = new Hono();
 
-app.post("/", ...loginUser);
+app.post("/", ...loginUserHandler);
 
 export default app;

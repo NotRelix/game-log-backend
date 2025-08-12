@@ -1,27 +1,27 @@
 import { createFactory } from "hono/factory";
 import type { InsertPost } from "../db/types.ts";
 import {
+  createPostDb,
   deletePostDb,
-  getAllPosts,
-  getPost,
-  insertPost,
-  updatePost,
+  getPostDb,
+  getPostsDb,
+  updatePostDb,
 } from "../db/query.ts";
 import { zValidator } from "@hono/zod-validator";
 import { postSchema } from "../validators/user.ts";
 
 const factory = createFactory();
 
-export const getPosts = factory.createHandlers(async (c) => {
+export const getPostsHandler = factory.createHandlers(async (c) => {
   try {
-    const posts = await getAllPosts();
+    const posts = await getPostsDb();
     return c.json(posts, 200);
   } catch (err) {
     return c.json({ error: "Failed to get posts" }, 500);
   }
 });
 
-export const createPost = factory.createHandlers(
+export const createPostHandler = factory.createHandlers(
   zValidator("json", postSchema),
   async (c) => {
     try {
@@ -32,7 +32,7 @@ export const createPost = factory.createHandlers(
         body: body.body,
         userId: user.id,
       };
-      const post = await insertPost(newPost);
+      const post = await createPostDb(newPost);
       return c.json(post, 201);
     } catch (err) {
       return c.json({ error: "Failed to create post" }, 500);
@@ -40,14 +40,13 @@ export const createPost = factory.createHandlers(
   }
 );
 
-export const getSinglePost = factory.createHandlers(async (c) => {
+export const getPostHandler = factory.createHandlers(async (c) => {
   try {
-    const postIdStr = c.req.param("postId");
-    const postId = Number(postIdStr);
+    const postId = Number(c.req.param("postId"));
     if (isNaN(postId)) {
       return c.json({ error: "Invalid post id" }, 400);
     }
-    const post = await getPost(postId);
+    const post = await getPostDb(postId);
     if (!post) {
       return c.json({ error: "Post not found" }, 404);
     }
@@ -57,7 +56,7 @@ export const getSinglePost = factory.createHandlers(async (c) => {
   }
 });
 
-export const editPost = factory.createHandlers(
+export const editPostHandler = factory.createHandlers(
   zValidator("json", postSchema.partial()),
   async (c) => {
     try {
@@ -65,7 +64,7 @@ export const editPost = factory.createHandlers(
       if (isNaN(postId)) {
         return c.json({ error: "Invalid post id" }, 400);
       }
-      const post = await getPost(postId);
+      const post = await getPostDb(postId);
       if (!post) {
         return c.json({ error: "Post doesn't exist" }, 404);
       }
@@ -73,11 +72,11 @@ export const editPost = factory.createHandlers(
       if (post.userId !== user.id) {
         return c.json({ error: "Unauthorized access" }, 403);
       }
-      const body = c.req.valid("json");
+      const body = await c.req.valid("json");
       const cleanPost = Object.fromEntries(
         Object.entries(body).filter(([_, v]) => v !== undefined)
       );
-      const updated = await updatePost(postId, cleanPost);
+      const updated = await updatePostDb(postId, cleanPost);
       return c.json(updated, 200);
     } catch (err) {
       return c.json({ error: "Failed to edit post" }, 500);
@@ -91,7 +90,7 @@ export const deletePostHandler = factory.createHandlers(async (c) => {
     if (isNaN(postId)) {
       return c.json({ error: "Invalid post id" }, 400);
     }
-    const post = await getPost(postId);
+    const post = await getPostDb(postId);
     if (!post) {
       return c.json({ error: "Post doesn't exist" }, 404);
     }

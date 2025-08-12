@@ -1,18 +1,18 @@
 import { createFactory } from "hono/factory";
 import { zValidator } from "@hono/zod-validator";
 import { userSchema } from "../validators/user.ts";
-import { getUser } from "../db/query.ts";
+import { getUserDb } from "../db/query.ts";
 import bcrypt from "bcrypt";
 import { sign } from "hono/jwt";
 
 const factory = createFactory();
 
-export const loginUser = factory.createHandlers(
+export const loginUserHandler = factory.createHandlers(
   zValidator("json", userSchema),
   async (c) => {
     try {
       const body = c.req.valid("json");
-      const user = await getUser(body.username);
+      const user = await getUserDb(body.username);
       const errorMessage = { error: "Invalid username or password" };
       if (!user) {
         return c.json(errorMessage, 401);
