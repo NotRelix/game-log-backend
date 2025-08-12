@@ -55,3 +55,13 @@ export const updatePost = async (
     .returning();
   return updatedPost[0] ?? null;
 };
+
+export const deletePostDb = async (
+  postId: number
+): Promise<SelectPost | null> => {
+  const deletedPost = await db
+    .delete(postsTable)
+    .where(eq(postsTable.id, postId))
+    .returning();
+  return deletedPost[0] ?? null;
+};

@@ -1,6 +1,12 @@
 import { createFactory } from "hono/factory";
 import type { InsertPost } from "../db/types.ts";
-import { getAllPosts, getPost, insertPost, updatePost } from "../db/query.ts";
+import {
+  deletePostDb,
+  getAllPosts,
+  getPost,
+  insertPost,
+  updatePost,
+} from "../db/query.ts";
 import { zValidator } from "@hono/zod-validator";
 import { postSchema } from "../validators/user.ts";
 
@@ -55,14 +61,13 @@ export const editPost = factory.createHandlers(
   zValidator("json", postSchema.partial()),
   async (c) => {
     try {
-      const postIdStr = c.req.param("postId");
-      const postId = Number(postIdStr);
+      const postId = Number(c.req.param("postId"));
       if (isNaN(postId)) {
         return c.json({ error: "Invalid post id" }, 400);
       }
       const post = await getPost(postId);
       if (!post) {
-        return c.json({ error: "Post doesn't exist " }, 404);
+        return c.json({ error: "Post doesn't exist" }, 404);
       }
       const user = c.get("jwtPayload");
       if (post.userId !== user.id) {
@@ -79,3 +84,24 @@ export const editPost = factory.createHandlers(
     }
   }
 );
+
+export const deletePostHandler = factory.createHandlers(async (c) => {
+  try {
+    const postId = Number(c.req.param("postId"));
+    if (isNaN(postId)) {
+      return c.json({ error: "Invalid post id" }, 400);
+    }
+    const post = await getPost(postId);
+    if (!post) {
+      return c.json({ error: "Post doesn't exist" }, 404);
+    }
+    const user = c.get("jwtPayload");
+    if (post.userId !== user.id) {
+      return c.json({ error: "Unauthorized access" }, 403);
+    }
+    const deleted = await deletePostDb(postId);
+    return c.json(deleted, 200);
+  } catch (err) {
+    return c.json({ error: "Failed to delete post" }, 500);
+  }
+});
