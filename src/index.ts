@@ -4,16 +4,12 @@ import users from "./routes/users.ts";
 import register from "./routes/register.ts";
 import login from "./routes/login.ts";
 import posts from "./routes/posts.ts";
-import { jwtMiddleware } from "./middleware/auth.ts";
 import type { Variables } from "./types/env.ts";
 
 const app = new Hono<{ Variables: Variables }>();
 
 app.route("/register", register);
 app.route("/login", login);
-
-app.use("/users", jwtMiddleware);
-app.use("/posts", jwtMiddleware);
 
 app.route("/users", users);
 app.route("/posts", posts);

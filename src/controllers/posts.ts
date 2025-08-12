@@ -1,14 +1,18 @@
 import { createFactory } from "hono/factory";
 import type { InsertPost } from "../db/types.ts";
-import { getAllPosts, insertPost } from "../db/query.ts";
+import { getAllPosts, getPost, insertPost } from "../db/query.ts";
 import { zValidator } from "@hono/zod-validator";
 import { postSchema } from "../validators/user.ts";
 
 const factory = createFactory();
 
 export const getPosts = factory.createHandlers(async (c) => {
-  const posts = await getAllPosts();
-  return c.json(posts);
+  try {
+    const posts = await getAllPosts();
+    return c.json(posts);
+  } catch (err) {
+    return c.json({ error: "Failed to get posts: ", err });
+  }
 });
 
 export const createPost = factory.createHandlers(
@@ -25,7 +29,24 @@ export const createPost = factory.createHandlers(
       const post = await insertPost(newPost);
       return c.json(post);
     } catch (err) {
-      return c.json({ error: "Failed to create post: ", err });
+      return c.json({ error: "Failed to create post: ", details: err });
     }
   }
 );
+
+export const getSinglePost = factory.createHandlers(async (c) => {
+  try {
+    const postIdStr = c.req.param("postId");
+    const postId = Number(postIdStr);
+    if (isNaN(postId)) {
+      return c.json({ error: "Invalid post id" });
+    }
+    const post = await getPost(postId);
+    if (!post) {
+      return c.json({ error: "Post not found" });
+    }
+    return c.json(post);
+  } catch (err) {
+    return c.json({ error: "Failed to get single post: ", details: err });
+  }
+});

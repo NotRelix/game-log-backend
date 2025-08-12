@@ -34,7 +34,7 @@ export const loginUser = factory.createHandlers(
       const { password, ...safeUser } = user;
       return c.json({ token, user: safeUser });
     } catch (err) {
-      return c.json({ error: "Failed to login user: ", err });
+      return c.json({ error: "Failed to login user: ", details: err });
     }
   }
 );
