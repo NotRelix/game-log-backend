@@ -61,7 +61,10 @@ export const editPost = factory.createHandlers(
         return c.json({ error: "Invalid post id" });
       }
       const body = c.req.valid("json");
-      const updated = await updatePost(postId, body);
+      const cleanPost = Object.fromEntries(
+        Object.entries(body).filter(([_, v]) => v !== undefined)
+      );
+      const updated = await updatePost(postId, cleanPost);
       return c.json(updated);
     } catch (err) {
       return c.json({ error: "Failed to edit post", details: err });

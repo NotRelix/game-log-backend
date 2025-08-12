@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db } from "./drizzle.ts";
 import { postsTable, usersTable } from "./schema.ts";
 import type {
@@ -50,7 +50,7 @@ export const updatePost = async (
 ): Promise<SelectPost | null> => {
   const updatedPost = await db
     .update(postsTable)
-    .set(updated)
+    .set({ updatedAt: sql`NOW()`, ...updated })
     .where(eq(postsTable.id, postId))
     .returning();
   return updatedPost[0] ?? null;

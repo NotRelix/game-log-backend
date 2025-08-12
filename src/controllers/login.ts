@@ -28,7 +28,7 @@ export const loginUser = factory.createHandlers(
         id: user.id,
         username: user.username,
         role: "regular",
-        exp: Math.floor(Date.now() / 1000) + 60 * 5,
+        exp: Math.floor(Date.now() / 1000) + 60 * 60,   // 60 seconds * 60 minutes = 1 Hour
       };
       const token = await sign(payload, process.env.JWT_SECRET!);
       const { password, ...safeUser } = user;
