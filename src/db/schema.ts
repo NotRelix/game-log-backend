@@ -12,6 +12,12 @@ export const usersTable = pgTable("users", {
   username: varchar({ length: 24 }).unique().notNull(),
   password: varchar({ length: 255 }).notNull(),
   createdAt: timestamp({ withTimezone: true }).defaultNow(),
+  roleId: integer().notNull().default(1),
+});
+
+export const rolesTable = pgTable("roles", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  role: varchar({ length: 24 }),
 });
 
 export const postsTable = pgTable("posts", {
@@ -25,8 +31,12 @@ export const postsTable = pgTable("posts", {
     .notNull(),
 });
 
-export const usersRelations = relations(usersTable, ({ many }) => ({
+export const usersRelations = relations(usersTable, ({ one, many }) => ({
   posts: many(postsTable),
+  role: one(rolesTable, {
+    fields: [usersTable.roleId],
+    references: [rolesTable.id],
+  }),
 }));
 
 export const postsRelations = relations(postsTable, ({ one }) => ({
@@ -35,3 +45,9 @@ export const postsRelations = relations(postsTable, ({ one }) => ({
     references: [usersTable.id],
   }),
 }));
+
+export const rolesRelations = relations(rolesTable, ({ many }) => ({
+  users: many(usersTable),
+}));
+
+

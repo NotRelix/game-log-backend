@@ -15,6 +15,13 @@
       "when": 1754913950708,
       "tag": "0001_fresh_omega_red",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1755001544027,
+      "tag": "0002_mixed_black_cat",
+      "breakpoints": true
     }
   ]
 }

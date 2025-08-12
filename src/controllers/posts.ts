@@ -9,9 +9,9 @@ const factory = createFactory();
 export const getPosts = factory.createHandlers(async (c) => {
   try {
     const posts = await getAllPosts();
-    return c.json(posts);
+    return c.json(posts, 200);
   } catch (err) {
-    return c.json({ error: "Failed to get posts", details: err });
+    return c.json({ error: "Failed to get posts" }, 500);
   }
 });
 
@@ -27,9 +27,9 @@ export const createPost = factory.createHandlers(
         userId: user.id,
       };
       const post = await insertPost(newPost);
-      return c.json(post);
+      return c.json(post, 201);
     } catch (err) {
-      return c.json({ error: "Failed to create post", details: err });
+      return c.json({ error: "Failed to create post" }, 500);
     }
   }
 );
@@ -39,15 +39,15 @@ export const getSinglePost = factory.createHandlers(async (c) => {
     const postIdStr = c.req.param("postId");
     const postId = Number(postIdStr);
     if (isNaN(postId)) {
-      return c.json({ error: "Invalid post id" });
+      return c.json({ error: "Invalid post id" }, 400);
     }
     const post = await getPost(postId);
     if (!post) {
-      return c.json({ error: "Post not found" });
+      return c.json({ error: "Post not found" }, 404);
     }
     return c.json(post);
   } catch (err) {
-    return c.json({ error: "Failed to get single post", details: err });
+    return c.json({ error: "Failed to get single post" }, 500);
   }
 });
 
@@ -58,24 +58,24 @@ export const editPost = factory.createHandlers(
       const postIdStr = c.req.param("postId");
       const postId = Number(postIdStr);
       if (isNaN(postId)) {
-        return c.json({ error: "Invalid post id" });
+        return c.json({ error: "Invalid post id" }, 400);
       }
       const post = await getPost(postId);
       if (!post) {
-        return c.json({ error: "Post doesn't exist " });
+        return c.json({ error: "Post doesn't exist " }, 404);
       }
       const user = c.get("jwtPayload");
       if (post.userId !== user.id) {
-        return c.json({ error: "Unauthorized access" });
+        return c.json({ error: "Unauthorized access" }, 403);
       }
       const body = c.req.valid("json");
       const cleanPost = Object.fromEntries(
         Object.entries(body).filter(([_, v]) => v !== undefined)
       );
       const updated = await updatePost(postId, cleanPost);
-      return c.json(updated);
+      return c.json(updated, 200);
     } catch (err) {
-      return c.json({ error: "Failed to edit post", details: err });
+      return c.json({ error: "Failed to edit post" }, 500);
     }
   }
 );

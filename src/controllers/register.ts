@@ -14,7 +14,7 @@ export const registerUser = factory.createHandlers(
       const body = c.req.valid("json");
       const user = await getUser(body.username);
       if (user) {
-        return c.json({ error: "User already exists" });
+        return c.json({ error: "User already exists" }, 400);
       }
       const hashedPassword = await bcrypt.hash(body.password, 10);
       const newUser: InsertUser = {
@@ -23,12 +23,12 @@ export const registerUser = factory.createHandlers(
       };
       const newUserResult = await insertUser(newUser);
       if (!newUserResult) {
-        return c.json({ error: "Something went wrong creating the user" });
+        return c.json({ error: "Something went wrong creating the user" }, 500);
       }
       const { password, ...safeUser } = newUserResult;
-      return c.json(safeUser);
+      return c.json(safeUser, 201);
     } catch (err) {
-      return c.json({ error: "Failed to register user", details: err });
+      return c.json({ error: "Failed to register user" }, 500);
     }
   }
 );

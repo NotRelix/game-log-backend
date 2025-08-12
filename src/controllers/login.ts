@@ -15,26 +15,26 @@ export const loginUser = factory.createHandlers(
       const user = await getUser(body.username);
       const errorMessage = { error: "Invalid username or password" };
       if (!user) {
-        return c.json(errorMessage);
+        return c.json(errorMessage, 401);
       }
       const isPasswordMatch = await bcrypt.compare(
         body.password,
         user.password
       );
       if (!isPasswordMatch) {
-        return c.json(errorMessage);
+        return c.json(errorMessage, 401);
       }
       const payload = {
         id: user.id,
         username: user.username,
-        role: "regular",
-        exp: Math.floor(Date.now() / 1000) + 60 * 60,   // 60 seconds * 60 minutes = 1 Hour
+        role: user.roleId,
+        exp: Math.floor(Date.now() / 1000) + 60 * 60, // 60 seconds * 60 minutes = 1 Hour
       };
       const token = await sign(payload, process.env.JWT_SECRET!);
       const { password, ...safeUser } = user;
-      return c.json({ token, user: safeUser });
+      return c.json({ token, user: safeUser }, 200);
     } catch (err) {
-      return c.json({ error: "Failed to login user", details: err });
+      return c.json({ error: "Failed to login user" }, 500);
     }
   }
 );
