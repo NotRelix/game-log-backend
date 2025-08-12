@@ -12,7 +12,7 @@ export const usersTable = pgTable("users", {
   username: varchar({ length: 24 }).unique().notNull(),
   password: varchar({ length: 255 }).notNull(),
   createdAt: timestamp({ withTimezone: true }).defaultNow(),
-  roleId: integer().notNull().default(1),
+  roleId: integer().notNull().default(2),
 });
 
 export const rolesTable = pgTable("roles", {
