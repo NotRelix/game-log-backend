@@ -1,6 +1,6 @@
 import { eq, sql } from "drizzle-orm";
 import { db } from "./drizzle.ts";
-import { postsTable, usersTable } from "./schema.ts";
+import { commentsTable, postsTable, usersTable } from "./schema.ts";
 import type {
   InsertPost,
   InsertUser,
@@ -8,7 +8,9 @@ import type {
   SelectUser,
 } from "./types.ts";
 
-export const getUserDb = async (username: string): Promise<SelectUser | null> => {
+export const getUserDb = async (
+  username: string
+): Promise<SelectUser | null> => {
   const user = await db
     .select()
     .from(usersTable)
@@ -34,6 +36,18 @@ export const getPostDb = async (postId: number): Promise<SelectPost | null> => {
 
 export const getPostsDb = async (): Promise<SelectPost[] | null> => {
   const posts = await db.select().from(postsTable);
+  return posts ?? null;
+};
+
+export const getPostWithCommentsDb = async (
+  postId: number
+): Promise<SelectPost | null> => {
+  const posts = await db.query.postsTable.findFirst({
+    where: (posts, { eq }) => eq(posts.id, postId),
+    with: {
+      comments: true,
+    },
+  });
   return posts ?? null;
 };
 
