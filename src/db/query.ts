@@ -5,6 +5,7 @@ import type {
   InsertComment,
   InsertPost,
   InsertUser,
+  SelectComment,
   SelectPost,
   SelectUser,
 } from "./types.ts";
@@ -40,18 +41,6 @@ export const getPostsDb = async (): Promise<SelectPost[] | null> => {
   return posts ?? null;
 };
 
-export const getPostWithCommentsDb = async (
-  postId: number
-): Promise<SelectPost | null> => {
-  const posts = await db.query.postsTable.findFirst({
-    where: (posts, { eq }) => eq(posts.id, postId),
-    with: {
-      comments: true,
-    },
-  });
-  return posts ?? null;
-};
-
 export const createPostDb = async (
   newPost: InsertPost
 ): Promise<SelectPost | null> => {
@@ -79,6 +68,16 @@ export const deletePostDb = async (
     .where(eq(postsTable.id, postId))
     .returning();
   return deletedPost[0] ?? null;
+};
+
+export const getCommentsDb = async (
+  postId: number
+): Promise<SelectComment[] | null> => {
+  const comments = await db
+    .select()
+    .from(commentsTable)
+    .where(eq(commentsTable.postId, postId));
+  return comments ?? null;
 };
 
 export const createCommentDb = async (

@@ -5,7 +5,6 @@ import {
   deletePostDb,
   getPostDb,
   getPostsDb,
-  getPostWithCommentsDb,
   updatePostDb,
 } from "../db/query.ts";
 import { zValidator } from "@hono/zod-validator";
@@ -47,7 +46,7 @@ export const getPostHandler = factory.createHandlers(async (c) => {
     if (isNaN(postId)) {
       return c.json({ error: "Invalid post id" }, 400);
     }
-    const post = await getPostWithCommentsDb(postId);
+    const post = await getPostDb(postId);
     if (!post) {
       return c.json({ error: "Post not found" }, 404);
     }
