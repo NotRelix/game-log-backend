@@ -1,6 +1,7 @@
 import { createFactory } from "hono/factory";
 import {
   createCommentDb,
+  deleteCommentDb,
   editCommentDb,
   getCommentDb,
   getCommentsDb,
@@ -76,3 +77,24 @@ export const editCommentHandler = factory.createHandlers(
     }
   }
 );
+
+export const deleteCommentHandler = factory.createHandlers(async (c) => {
+  try {
+    const commentId = Number(c.req.param("commentId"));
+    if (isNaN(commentId)) {
+      return c.json({ error: "Invalid comment id" }, 400);
+    }
+    const comment = await getCommentDb(commentId);
+    if (!comment) {
+      return c.json({ error: "Comment doesn't exist" }, 404);
+    }
+    const user = c.get("jwtPayload");
+    if (comment.authorId !== user.id) {
+      return c.json({ error: "Unauthorized access" }, 403);
+    }
+    const deletedComment = await deleteCommentDb(commentId);
+    return c.json(deletedComment, 200);
+  } catch (err) {
+    return c.json({ error: "Failed to delete comment" }, 500);
+  }
+});

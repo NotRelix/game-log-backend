@@ -114,3 +114,13 @@ export const editCommentDb = async (
     .returning();
   return editedComment[0] ?? null;
 };
+
+export const deleteCommentDb = async (
+  commentId: number
+): Promise<SelectComment | null> => {
+  const deletedComment = await db
+    .delete(commentsTable)
+    .where(eq(commentsTable.id, commentId))
+    .returning();
+  return deletedComment[0] ?? null;
+};
