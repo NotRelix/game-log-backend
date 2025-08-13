@@ -37,7 +37,9 @@ export const commentsTable = pgTable("comments", {
   updatedAt: timestamp({ withTimezone: true }).defaultNow(),
   postId: integer().notNull(),
   authorId: integer().notNull(),
-  parentId: integer(),
+  parentId: integer().references(() => commentsTable.id, {
+    onDelete: "cascade",
+  }),
 });
 
 // Relations
