@@ -23,7 +23,6 @@ export const createReplyHandler = factory.createHandlers(
         return c.json({ error: "Parent comment doesn't exist" }, 404);
       }
       const user = c.get("jwtPayload");
-      console.log(user);
       const newReply = await createReplyDb(
         body.comment,
         postId,
