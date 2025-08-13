@@ -37,6 +37,7 @@ export const commentsTable = pgTable("comments", {
   updatedAt: timestamp({ withTimezone: true }).defaultNow(),
   postId: integer().notNull(),
   authorId: integer().notNull(),
+  parentId: integer(),
 });
 
 // Relations
@@ -61,7 +62,7 @@ export const rolesRelations = relations(rolesTable, ({ many }) => ({
   users: many(usersTable),
 }));
 
-export const commentsRelations = relations(commentsTable, ({ one }) => ({
+export const commentsRelations = relations(commentsTable, ({ one, many }) => ({
   post: one(postsTable, {
     fields: [commentsTable.postId],
     references: [postsTable.id],
@@ -69,5 +70,13 @@ export const commentsRelations = relations(commentsTable, ({ one }) => ({
   author: one(usersTable, {
     fields: [commentsTable.authorId],
     references: [usersTable.id],
+  }),
+  parent: one(commentsTable, {
+    fields: [commentsTable.parentId],
+    references: [commentsTable.id],
+    relationName: "commentsToReplies",
+  }),
+  replies: many(commentsTable, {
+    relationName: "commentsToReplies",
   }),
 }));

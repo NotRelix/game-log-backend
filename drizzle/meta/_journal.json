@@ -36,6 +36,13 @@
       "when": 1755087374358,
       "tag": "0004_early_riptide",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1755093554383,
+      "tag": "0005_fixed_johnny_blaze",
+      "breakpoints": true
     }
   ]
 }
