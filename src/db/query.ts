@@ -2,6 +2,7 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "./drizzle.ts";
 import { commentsTable, postsTable, usersTable } from "./schema.ts";
 import type {
+  InsertComment,
   InsertPost,
   InsertUser,
   SelectPost,
@@ -78,4 +79,20 @@ export const deletePostDb = async (
     .where(eq(postsTable.id, postId))
     .returning();
   return deletedPost[0] ?? null;
+};
+
+export const createCommentDb = async (
+  comment: string,
+  postId: number,
+  authorId: number
+): Promise<InsertComment | null> => {
+  const createdComment = await db
+    .insert(commentsTable)
+    .values({
+      comment,
+      postId,
+      authorId,
+    })
+    .returning();
+  return createdComment[0] ?? null;
 };
