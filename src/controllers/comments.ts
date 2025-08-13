@@ -34,9 +34,6 @@ export const createCommentHandler = factory.createHandlers(
         return c.json({ error: "Invalid post id" }, 400);
       }
       const user = c.get("jwtPayload");
-      if (!user) {
-        return c.json({ error: "Login to comment" }, 403);
-      }
       const createdComment = await createCommentDb(
         body.comment,
         postId,

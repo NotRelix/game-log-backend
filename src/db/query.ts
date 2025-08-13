@@ -124,3 +124,21 @@ export const deleteCommentDb = async (
     .returning();
   return deletedComment[0] ?? null;
 };
+
+export const createReplyDb = async (
+  comment: string,
+  postId: number,
+  authorId: number,
+  parentId: number
+): Promise<SelectComment | null> => {
+  const newReply = await db
+    .insert(commentsTable)
+    .values({
+      comment,
+      postId,
+      authorId,
+      parentId,
+    })
+    .returning();
+  return newReply[0] ?? null;
+};
