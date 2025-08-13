@@ -31,6 +31,7 @@ export const createPostHandler = factory.createHandlers(
         title: body.title,
         body: body.body,
         authorId: user.id,
+        published: body.published,
       };
       const post = await createPostDb(newPost);
       return c.json(post, 201);
