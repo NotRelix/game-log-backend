@@ -48,7 +48,7 @@ export const createPostDb = async (
   return post[0] ?? null;
 };
 
-export const updatePostDb = async (
+export const editPostDb = async (
   postId: number,
   updated: Partial<InsertPost>
 ): Promise<SelectPost | null> => {

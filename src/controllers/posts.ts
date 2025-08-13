@@ -3,9 +3,9 @@ import type { InsertPost } from "../db/types.ts";
 import {
   createPostDb,
   deletePostDb,
+  editPostDb,
   getPostDb,
   getPostsDb,
-  updatePostDb,
 } from "../db/query.ts";
 import { zValidator } from "@hono/zod-validator";
 import { postSchema } from "../validators/post.ts";
@@ -72,11 +72,8 @@ export const editPostHandler = factory.createHandlers(
       if (post.authorId !== user.id) {
         return c.json({ error: "Unauthorized access" }, 403);
       }
-      const body = await c.req.valid("json");
-      const cleanPost = Object.fromEntries(
-        Object.entries(body).filter(([_, v]) => v !== undefined)
-      );
-      const updated = await updatePostDb(postId, cleanPost);
+      const newPost = await c.req.valid("json");
+      const updated = await editPostDb(postId, newPost);
       return c.json(updated, 200);
     } catch (err) {
       return c.json({ error: "Failed to edit post" }, 500);
