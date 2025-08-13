@@ -8,7 +8,7 @@ import {
   updatePostDb,
 } from "../db/query.ts";
 import { zValidator } from "@hono/zod-validator";
-import { postSchema } from "../validators/user.ts";
+import { postSchema } from "../validators/post.ts";
 
 const factory = createFactory();
 
