@@ -29,6 +29,13 @@
       "when": 1755062734975,
       "tag": "0003_skinny_war_machine",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1755087374358,
+      "tag": "0004_early_riptide",
+      "breakpoints": true
     }
   ]
 }

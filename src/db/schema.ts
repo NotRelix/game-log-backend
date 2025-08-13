@@ -33,6 +33,8 @@ export const postsTable = pgTable("posts", {
 export const commentsTable = pgTable("comments", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   comment: text(),
+  createdAt: timestamp({ withTimezone: true }).defaultNow(),
+  updatedAt: timestamp({ withTimezone: true }).defaultNow(),
   postId: integer().notNull(),
   authorId: integer().notNull(),
 });

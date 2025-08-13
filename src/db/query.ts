@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { db } from "./drizzle.ts";
 import { commentsTable, postsTable, usersTable } from "./schema.ts";
 import type {
@@ -76,7 +76,8 @@ export const getCommentsDb = async (
   const comments = await db
     .select()
     .from(commentsTable)
-    .where(eq(commentsTable.postId, postId));
+    .where(eq(commentsTable.postId, postId))
+    .orderBy(desc(commentsTable.createdAt));
   return comments ?? null;
 };
 
@@ -94,14 +95,10 @@ export const createCommentDb = async (
   comment: string,
   postId: number,
   authorId: number
-): Promise<InsertComment | null> => {
+): Promise<SelectComment | null> => {
   const createdComment = await db
     .insert(commentsTable)
-    .values({
-      comment,
-      postId,
-      authorId,
-    })
+    .values({ comment, postId, authorId })
     .returning();
   return createdComment[0] ?? null;
 };
@@ -112,7 +109,7 @@ export const editCommentDb = async (
 ): Promise<SelectComment | null> => {
   const editedComment = await db
     .update(commentsTable)
-    .set(newComment)
+    .set({ updatedAt: sql`NOW()`, ...newComment })
     .where(eq(commentsTable.id, commentId))
     .returning();
   return editedComment[0] ?? null;

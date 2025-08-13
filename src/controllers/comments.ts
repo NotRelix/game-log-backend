@@ -70,7 +70,7 @@ export const editCommentHandler = factory.createHandlers(
       }
       const newComment = await c.req.valid("json");
       const editedComment = await editCommentDb(commentId, newComment);
-      return c.json({ comment: editedComment });
+      return c.json(editedComment, 200);
     } catch (err) {
       return c.json({ error: "Failed to edit comment" }, 500);
     }
