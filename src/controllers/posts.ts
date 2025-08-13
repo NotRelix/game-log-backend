@@ -30,7 +30,7 @@ export const createPostHandler = factory.createHandlers(
       const newPost: InsertPost = {
         title: body.title,
         body: body.body,
-        userId: user.id,
+        authorId: user.id,
       };
       const post = await createPostDb(newPost);
       return c.json(post, 201);
@@ -69,7 +69,7 @@ export const editPostHandler = factory.createHandlers(
         return c.json({ error: "Post doesn't exist" }, 404);
       }
       const user = c.get("jwtPayload");
-      if (post.userId !== user.id) {
+      if (post.authorId !== user.id) {
         return c.json({ error: "Unauthorized access" }, 403);
       }
       const body = await c.req.valid("json");
@@ -95,7 +95,7 @@ export const deletePostHandler = factory.createHandlers(async (c) => {
       return c.json({ error: "Post doesn't exist" }, 404);
     }
     const user = c.get("jwtPayload");
-    if (post.userId !== user.id) {
+    if (post.authorId !== user.id) {
       return c.json({ error: "Unauthorized access" }, 403);
     }
     const deleted = await deletePostDb(postId);

@@ -7,6 +7,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
+// Models
 export const usersTable = pgTable("users", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   username: varchar({ length: 24 }).unique().notNull(),
@@ -26,28 +27,45 @@ export const postsTable = pgTable("posts", {
   body: text(),
   createdAt: timestamp({ withTimezone: true }).defaultNow(),
   updatedAt: timestamp({ withTimezone: true }).defaultNow(),
-  userId: integer()
-    .references(() => usersTable.id)
-    .notNull(),
+  authorId: integer().notNull(),
 });
 
+export const commentsTable = pgTable("comments", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  comment: text(),
+  postId: integer().notNull(),
+  authorId: integer().notNull(),
+});
+
+// Relations
 export const usersRelations = relations(usersTable, ({ one, many }) => ({
   posts: many(postsTable),
   role: one(rolesTable, {
     fields: [usersTable.roleId],
     references: [rolesTable.id],
   }),
+  comments: many(commentsTable),
 }));
 
-export const postsRelations = relations(postsTable, ({ one }) => ({
+export const postsRelations = relations(postsTable, ({ one, many }) => ({
   user: one(usersTable, {
-    fields: [postsTable.userId],
+    fields: [postsTable.authorId],
     references: [usersTable.id],
   }),
+  comments: many(commentsTable),
 }));
 
 export const rolesRelations = relations(rolesTable, ({ many }) => ({
   users: many(usersTable),
 }));
 
-
+export const commentsRelations = relations(commentsTable, ({ one }) => ({
+  post: one(postsTable, {
+    fields: [commentsTable.postId],
+    references: [postsTable.id],
+  }),
+  author: one(usersTable, {
+    fields: [commentsTable.authorId],
+    references: [usersTable.id],
+  }),
+}));
