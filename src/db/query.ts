@@ -80,6 +80,16 @@ export const getCommentsDb = async (
   return comments ?? null;
 };
 
+export const getCommentDb = async (
+  commentId: number
+): Promise<SelectComment | null> => {
+  const comment = await db
+    .select()
+    .from(commentsTable)
+    .where(eq(commentsTable.id, commentId));
+  return comment[0] ?? null;
+};
+
 export const createCommentDb = async (
   comment: string,
   postId: number,
@@ -94,4 +104,16 @@ export const createCommentDb = async (
     })
     .returning();
   return createdComment[0] ?? null;
+};
+
+export const editCommentDb = async (
+  commentId: number,
+  newComment: Partial<InsertComment>
+): Promise<SelectComment | null> => {
+  const editedComment = await db
+    .update(commentsTable)
+    .set(newComment)
+    .where(eq(commentsTable.id, commentId))
+    .returning();
+  return editedComment[0] ?? null;
 };
