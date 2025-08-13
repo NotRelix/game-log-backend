@@ -1,10 +1,12 @@
 import { relations } from "drizzle-orm";
 import {
+  foreignKey,
   integer,
   pgTable,
   text,
   timestamp,
   varchar,
+  type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 
 // Models
@@ -37,7 +39,7 @@ export const commentsTable = pgTable("comments", {
   updatedAt: timestamp({ withTimezone: true }).defaultNow(),
   postId: integer().notNull(),
   authorId: integer().notNull(),
-  parentId: integer().references(() => commentsTable.id, {
+  parentId: integer().references((): AnyPgColumn => commentsTable.id, {
     onDelete: "cascade",
   }),
 });
