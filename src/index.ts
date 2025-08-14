@@ -5,8 +5,11 @@ import register from "./routes/register.ts";
 import login from "./routes/login.ts";
 import posts from "./routes/posts.ts";
 import type { Variables } from "./types/env.ts";
+import { cors } from "hono/cors";
 
 const app = new Hono<{ Variables: Variables }>();
+
+app.use(cors());
 
 app.route("/register", register);
 app.route("/login", login);
