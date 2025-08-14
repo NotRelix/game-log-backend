@@ -1,26 +1,14 @@
 import { createFactory } from "hono/factory";
-import { zValidator } from "@hono/zod-validator";
 import { userSchema } from "../validators/user.ts";
 import { getUserDb, insertUserDb } from "../db/query.ts";
 import type { InsertUser } from "../db/types.ts";
 import bcrypt from "bcrypt";
-import type { ZodIssue } from "zod/v3";
+import { validator } from "../middleware/validator.ts";
 
 const factory = createFactory();
 
 export const registerUserHandler = factory.createHandlers(
-  zValidator("json", userSchema, (result, c) => {
-    if (!result.success) {
-      const error = JSON.parse(result.error.message);
-      return c.json(
-        {
-          success: false,
-          messages: error.map((err: ZodIssue) => err.message),
-        },
-        400
-      );
-    }
-  }),
+  validator(userSchema),
   async (c) => {
     try {
       const body = c.req.valid("json");
