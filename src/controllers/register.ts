@@ -26,7 +26,10 @@ export const registerUserHandler = factory.createHandlers(
       const body = c.req.valid("json");
       const user = await getUserDb(body.username);
       if (user) {
-        return c.json({ message: "User already exists" }, 400);
+        return c.json(
+          { success: false, messages: ["User already exists"] },
+          400
+        );
       }
       const hashedPassword = await bcrypt.hash(body.password, 10);
       const newUser: InsertUser = {
@@ -36,14 +39,27 @@ export const registerUserHandler = factory.createHandlers(
       const newUserResult = await insertUserDb(newUser);
       if (!newUserResult) {
         return c.json(
-          { message: "Something went wrong creating the user" },
+          {
+            success: false,
+            messages: ["Something went wrong creating the user"],
+          },
           500
         );
       }
       const { password, ...safeUser } = newUserResult;
-      return c.json(safeUser, 201);
+      return c.json(
+        {
+          success: true,
+          messages: ["Successfully created an account"],
+          user: { ...safeUser },
+        },
+        201
+      );
     } catch (err) {
-      return c.json({ message: "Failed to register user" }, 500);
+      return c.json(
+        { success: false, messages: ["Failed to register user"] },
+        500
+      );
     }
   }
 );
