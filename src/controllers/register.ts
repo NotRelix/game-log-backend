@@ -39,7 +39,7 @@ export const registerUserHandler = factory.createHandlers(
         {
           success: true,
           messages: ["Successfully created an account"],
-          user: { ...safeUser },
+          user: safeUser,
         },
         201
       );
