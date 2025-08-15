@@ -15,7 +15,7 @@ export const loginUserHandler = factory.createHandlers(
       const user = await getUserDb(body.username);
       const errorMessage = {
         success: false,
-        message: ["Invalid username or password"],
+        messages: ["Invalid username or password"],
       };
       if (!user) {
         return c.json(errorMessage, 401);
@@ -38,14 +38,17 @@ export const loginUserHandler = factory.createHandlers(
       return c.json(
         {
           success: true,
-          message: "Successfully logged in",
+          messages: ["Successfully logged in"],
           token,
           user: safeUser,
         },
         200
       );
     } catch (err) {
-      return c.json({ success: false, message: ["Failed to login user"] }, 500);
+      return c.json(
+        { success: false, messages: ["Failed to login user"] },
+        500
+      );
     }
   }
 );
