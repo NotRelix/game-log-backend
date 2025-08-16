@@ -1,5 +1,6 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
+import auth from "./routes/auth.ts";
 import users from "./routes/users.ts";
 import register from "./routes/register.ts";
 import login from "./routes/login.ts";
@@ -11,6 +12,7 @@ const app = new Hono<{ Variables: Variables }>();
 
 app.use(cors());
 
+app.route("/auth", auth);
 app.route("/register", register);
 app.route("/login", login);
 
