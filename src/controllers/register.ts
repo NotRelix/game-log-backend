@@ -19,6 +19,13 @@ export const registerUserHandler = factory.createHandlers(
           400
         );
       }
+      const { confirmPassword } = await c.req.json();
+      if (body.password !== confirmPassword) {
+        return c.json(
+          { success: false, messages: ["Passwords don't match"] },
+          400
+        );
+      }
       const hashedPassword = await bcrypt.hash(body.password, 10);
       const newUser: InsertUser = {
         username: body.username,
