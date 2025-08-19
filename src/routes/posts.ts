@@ -7,7 +7,7 @@ import {
   getPostsHandler,
 } from "../controllers/posts.ts";
 import { jwtMiddleware } from "../middleware/auth.ts";
-import comments from "./comments.ts"; 
+import comments from "./comments.ts";
 
 const app = new Hono();
 

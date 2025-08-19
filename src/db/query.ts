@@ -142,3 +142,13 @@ export const createReplyDb = async (
     .returning();
   return newReply[0] ?? null;
 };
+
+export const getUserPostsDb = async (
+  userId: number
+): Promise<SelectPost[] | null> => {
+  const userPosts = await db
+    .select()
+    .from(postsTable)
+    .where(eq(postsTable.authorId, userId));
+  return userPosts ?? null;
+};
