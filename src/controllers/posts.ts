@@ -10,6 +10,7 @@ import {
 import { postSchema } from "../validators/post.ts";
 import { validator } from "../middleware/validator.ts";
 import fs from "node:fs";
+import supabase from "../../config/supabase.ts";
 
 const factory = createFactory();
 
@@ -41,26 +42,39 @@ export const createPostHandler = factory.createHandlers(async (c) => {
     if (!parsed.success) {
       return c.json({ success: false, messages: parsed.error }, 400);
     }
+
     const file = body.headerImg as File;
-    console.log(file);
     if (!file) {
       return c.json(
         { success: false, messages: ["Failed to upload file"] },
         400
       );
     }
+
     const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const filePath = `uploads/${Date.now()}-${file.name}`;
-    await fs.promises.writeFile(filePath, buffer);
+    const safeOriginalName = file.name
+      .normalize("NFKD")
+      .replace(/[^\x00-\x7F]/g, "")
+      .replace(/\s+/g, "_");
+
+    const filePath = `${Date.now()}-${safeOriginalName}`;
+    const { data, error } = await supabase.storage
+      .from("uploads")
+      .upload(filePath, arrayBuffer, {
+        contentType: file.type,
+      });
+    if (error) throw error;
+
+    const headerImgPath = `${process.env.SUPABASE_URL}/storage/v1/object/public/uploads/${filePath}`;
     const newPost: InsertPost = {
       title: parsed.data.title,
       body: parsed.data.body,
       authorId: user.id,
       published: body.published === "true",
-      headerImgPath: filePath,
+      headerImgPath: headerImgPath,
     };
     const post = await createPostDb(newPost);
+
     return c.json(
       {
         success: true,
