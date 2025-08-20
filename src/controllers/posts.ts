@@ -9,6 +9,7 @@ import {
 } from "../db/query.ts";
 import { postSchema } from "../validators/post.ts";
 import { validator } from "../middleware/validator.ts";
+import fs from "node:fs";
 
 const factory = createFactory();
 
@@ -28,35 +29,50 @@ export const getPostsHandler = factory.createHandlers(async (c) => {
   }
 });
 
-export const createPostHandler = factory.createHandlers(
-  validator(postSchema),
-  async (c) => {
-    try {
-      const user = c.get("jwtPayload");
-      const body = await c.req.valid("json");
-      const newPost: InsertPost = {
-        title: body.title,
-        body: body.body,
-        authorId: user.id,
-        published: body.published,
-      };
-      const post = await createPostDb(newPost);
+export const createPostHandler = factory.createHandlers(async (c) => {
+  try {
+    const user = c.get("jwtPayload");
+    const body = await c.req.parseBody();
+    const parsed = postSchema.safeParse({
+      title: body.title,
+      body: body.body,
+      published: body.published === "true",
+    });
+    if (!parsed.success) {
+      return c.json({ success: false, messages: parsed.error }, 400);
+    }
+    const file = body.headerImg as File;
+    console.log(file);
+    if (!file) {
       return c.json(
-        {
-          success: true,
-          messages: ["Successfully created a post"],
-          post: post,
-        },
-        201
-      );
-    } catch (err) {
-      return c.json(
-        { success: false, messages: ["Failed to create post"] },
-        500
+        { success: false, messages: ["Failed to upload file"] },
+        400
       );
     }
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const filePath = `uploads/${Date.now()}-${file.name}`;
+    await fs.promises.writeFile(filePath, buffer);
+    const newPost: InsertPost = {
+      title: parsed.data.title,
+      body: parsed.data.body,
+      authorId: user.id,
+      published: body.published === "true",
+      headerImgPath: filePath,
+    };
+    const post = await createPostDb(newPost);
+    return c.json(
+      {
+        success: true,
+        messages: ["Successfully created a post"],
+        post: post,
+      },
+      201
+    );
+  } catch (err) {
+    return c.json({ success: false, messages: ["Failed to create post"] }, 500);
   }
-);
+});
 
 export const getPostHandler = factory.createHandlers(async (c) => {
   try {
