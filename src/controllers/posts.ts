@@ -4,12 +4,12 @@ import {
   createPostDb,
   deletePostDb,
   editPostDb,
+  getEditorsPostsDb,
   getPostDb,
   getPostsDb,
 } from "../db/query.ts";
 import { postSchema } from "../validators/post.ts";
 import { validator } from "../middleware/validator.ts";
-import fs from "node:fs";
 import supabase from "../../config/supabase.ts";
 
 const factory = createFactory();
@@ -17,11 +17,13 @@ const factory = createFactory();
 export const getPostsHandler = factory.createHandlers(async (c) => {
   try {
     const posts = await getPostsDb();
+    const editorsPosts = await getEditorsPostsDb();
     return c.json(
       {
         success: true,
         messages: ["Successfully fetched all posts"],
         posts: posts,
+        editorsPosts: editorsPosts,
       },
       200
     );

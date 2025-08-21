@@ -152,3 +152,22 @@ export const getUserPostsDb = async (
     .where(eq(postsTable.authorId, userId));
   return userPosts ?? null;
 };
+
+export const getEditorsPostsDb = async (): Promise<SelectPost[] | null> => {
+  const editorsPosts = await db
+    .select({
+      id: postsTable.id,
+      title: postsTable.title,
+      body: postsTable.body,
+      headerImgPath: postsTable.headerImgPath,
+      published: postsTable.published,
+      createdAt: postsTable.createdAt,
+      updatedAt: postsTable.updatedAt,
+      authorId: postsTable.authorId,
+    })
+    .from(postsTable)
+    .innerJoin(usersTable, eq(usersTable.id, postsTable.authorId))
+    .where(eq(usersTable.roleId, 1))
+    .limit(5);
+  return editorsPosts ?? null;
+};
