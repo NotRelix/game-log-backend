@@ -44,28 +44,26 @@ export const createPostHandler = factory.createHandlers(async (c) => {
     }
 
     const file = body.headerImg as File;
-    if (!file) {
-      return c.json(
-        { success: false, messages: ["Failed to upload file"] },
-        400
-      );
+    let filePath = null;
+    if (file) {
+      const arrayBuffer = await file.arrayBuffer();
+      const safeOriginalName = file.name
+        .normalize("NFKD")
+        .replace(/[^\x00-\x7F]/g, "")
+        .replace(/\s+/g, "_");
+
+      filePath = `${Date.now()}-${safeOriginalName}`;
+      const { data, error } = await supabase.storage
+        .from("uploads")
+        .upload(filePath, arrayBuffer, {
+          contentType: file.type,
+        });
+      if (error) throw error;
     }
 
-    const arrayBuffer = await file.arrayBuffer();
-    const safeOriginalName = file.name
-      .normalize("NFKD")
-      .replace(/[^\x00-\x7F]/g, "")
-      .replace(/\s+/g, "_");
-
-    const filePath = `${Date.now()}-${safeOriginalName}`;
-    const { data, error } = await supabase.storage
-      .from("uploads")
-      .upload(filePath, arrayBuffer, {
-        contentType: file.type,
-      });
-    if (error) throw error;
-
-    const headerImgPath = `${process.env.SUPABASE_URL}/storage/v1/object/public/uploads/${filePath}`;
+    const headerImgPath = filePath
+      ? `${process.env.SUPABASE_URL}/storage/v1/object/public/uploads/${filePath}`
+      : null;
     const newPost: InsertPost = {
       title: parsed.data.title,
       body: parsed.data.body,
