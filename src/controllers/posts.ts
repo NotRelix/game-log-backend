@@ -9,7 +9,6 @@ import {
   getPostsDb,
 } from "../db/query.ts";
 import { postSchema } from "../validators/post.ts";
-import { validator } from "../middleware/validator.ts";
 import supabase from "../../config/supabase.ts";
 
 const factory = createFactory();

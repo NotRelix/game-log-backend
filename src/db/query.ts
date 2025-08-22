@@ -37,7 +37,10 @@ export const getPostDb = async (postId: number): Promise<SelectPost | null> => {
 };
 
 export const getPostsDb = async (): Promise<SelectPost[] | null> => {
-  const posts = await db.select().from(postsTable);
+  const posts = await db
+    .select()
+    .from(postsTable)
+    .orderBy(desc(postsTable.createdAt));
   return posts ?? null;
 };
 
