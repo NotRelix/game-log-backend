@@ -168,6 +168,7 @@ export const getEditorsPostsDb = async (): Promise<SelectPost[] | null> => {
     .from(postsTable)
     .innerJoin(usersTable, eq(usersTable.id, postsTable.authorId))
     .where(eq(usersTable.roleId, 1))
+    .orderBy(desc(postsTable.createdAt))
     .limit(5);
   return editorsPosts ?? null;
 };
