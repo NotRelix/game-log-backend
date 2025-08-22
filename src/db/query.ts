@@ -164,6 +164,7 @@ export const getEditorsPostsDb = async (): Promise<SelectPost[] | null> => {
       createdAt: postsTable.createdAt,
       updatedAt: postsTable.updatedAt,
       authorId: postsTable.authorId,
+      author: usersTable.username,
     })
     .from(postsTable)
     .innerJoin(usersTable, eq(usersTable.id, postsTable.authorId))
