@@ -30,8 +30,19 @@ export const insertUserDb = async (
 export const getPostDb = async (postId: number): Promise<SelectPost | null> => {
   if (!postId) return null;
   const post = await db
-    .select()
+    .select({
+      authorId: postsTable.authorId,
+      body: postsTable.body,
+      createdAt: postsTable.createdAt,
+      headerImgPath: postsTable.headerImgPath,
+      id: postsTable.id,
+      published: postsTable.published,
+      title: postsTable.title,
+      updatedAt: postsTable.updatedAt,
+      author: usersTable.username,
+    })
     .from(postsTable)
+    .innerJoin(usersTable, eq(usersTable.id, postsTable.authorId))
     .where(eq(postsTable.id, postId));
   return post[0] ?? null;
 };
