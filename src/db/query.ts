@@ -1,12 +1,18 @@
 import { desc, eq, sql } from "drizzle-orm";
 import { db } from "./drizzle.ts";
-import { commentsTable, postsTable, usersTable } from "./schema.ts";
+import {
+  commentsTable,
+  postsTable,
+  repliesTable,
+  usersTable,
+} from "./schema.ts";
 import type {
   InsertComment,
   InsertPost,
   InsertUser,
   SelectComment,
   SelectPost,
+  SelectReplies,
   SelectUser,
 } from "./types.ts";
 
@@ -144,9 +150,9 @@ export const createReplyDb = async (
   postId: number,
   authorId: number,
   parentId: number
-): Promise<SelectComment | null> => {
+): Promise<SelectReplies | null> => {
   const newReply = await db
-    .insert(commentsTable)
+    .insert(repliesTable)
     .values({
       comment,
       postId,

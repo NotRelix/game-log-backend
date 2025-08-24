@@ -41,6 +41,15 @@ export const commentsTable = pgTable("comments", {
   updatedAt: timestamp({ withTimezone: true }).defaultNow(),
   postId: integer().notNull(),
   authorId: integer().notNull(),
+});
+
+export const repliesTable = pgTable("replies", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  comment: text(),
+  createdAt: timestamp({ withTimezone: true }).defaultNow(),
+  updatedAt: timestamp({ withTimezone: true }).defaultNow(),
+  postId: integer().notNull(),
+  authorId: integer().notNull(),
   parentId: integer().references((): AnyPgColumn => commentsTable.id, {
     onDelete: "cascade",
   }),
@@ -77,12 +86,12 @@ export const commentsRelations = relations(commentsTable, ({ one, many }) => ({
     fields: [commentsTable.authorId],
     references: [usersTable.id],
   }),
-  parent: one(commentsTable, {
-    fields: [commentsTable.parentId],
+  replies: many(repliesTable),
+}));
+
+export const repliesRelations = relations(repliesTable, ({ one }) => ({
+  comment: one(commentsTable, {
+    fields: [repliesTable.parentId],
     references: [commentsTable.id],
-    relationName: "commentsToReplies",
-  }),
-  replies: many(commentsTable, {
-    relationName: "commentsToReplies",
   }),
 }));
