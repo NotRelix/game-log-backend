@@ -92,7 +92,7 @@ export const deletePostDb = async (
 
 export const getCommentsDb = async (
   postId: number
-): Promise<SelectComment[] | null> => {
+): Promise<{ comments: SelectComment[]; totalCount: number } | null> => {
   const comments = await db.query.commentsTable.findMany({
     where: eq(commentsTable.postId, postId),
     with: {
@@ -100,7 +100,12 @@ export const getCommentsDb = async (
     },
     orderBy: (comments, { desc }) => [desc(commentsTable.createdAt)],
   });
-  return comments ?? null;
+
+  if (!comments) return null;
+
+  const totalCount =
+    comments.length + comments.reduce((acc, c) => acc + c.replies.length, 0);
+  return { comments, totalCount };
 };
 
 export const getCommentDb = async (
