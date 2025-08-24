@@ -93,11 +93,13 @@ export const deletePostDb = async (
 export const getCommentsDb = async (
   postId: number
 ): Promise<SelectComment[] | null> => {
-  const comments = await db
-    .select()
-    .from(commentsTable)
-    .where(eq(commentsTable.postId, postId))
-    .orderBy(desc(commentsTable.createdAt));
+  const comments = await db.query.commentsTable.findMany({
+    where: eq(commentsTable.postId, postId),
+    with: {
+      replies: true,
+    },
+    orderBy: (comments, { desc }) => [desc(commentsTable.createdAt)],
+  });
   return comments ?? null;
 };
 
