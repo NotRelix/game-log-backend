@@ -53,7 +53,14 @@ export const createReplyHandler = factory.createHandlers(
         user.id,
         parentId
       );
-      return c.json(newReply, 201);
+      return c.json(
+        {
+          success: true,
+          messages: ["Successfully posted a reply"],
+          reply: newReply,
+        },
+        201
+      );
     } catch (err) {
       return c.json({ error: "Failed to reply to comment" }, 500);
     }
