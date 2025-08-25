@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import { jwtMiddleware } from "../middleware/auth.ts";
-import { createCommentHandler, deleteCommentHandler, editCommentHandler, getCommentsHandler, } from "../controllers/comments.ts";
-import replies from "./replies.ts";
+import { jwtMiddleware } from "../middleware/auth.js";
+import { createCommentHandler, deleteCommentHandler, editCommentHandler, getCommentsHandler, } from "../controllers/comments.js";
+import replies from "./replies.js";
 const app = new Hono();
 app.get("/", ...getCommentsHandler);
 app.post("/", jwtMiddleware, ...createCommentHandler);

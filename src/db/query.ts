@@ -1,11 +1,11 @@
 import { desc, eq, sql } from "drizzle-orm";
-import { db } from "./drizzle.ts";
+import { db } from "./drizzle.js";
 import {
   commentsTable,
   postsTable,
   repliesTable,
   usersTable,
-} from "./schema.ts";
+} from "./schema.js";
 import type {
   InsertComment,
   InsertPost,

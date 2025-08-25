@@ -1,7 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
 import { createFactory } from "hono/factory";
-import { commentSchema } from "../validators/comment.ts";
-import { createReplyDb, getCommentDb, getRepliesDb } from "../db/query.ts";
+import { commentSchema } from "../validators/comment.js";
+import { createReplyDb, getCommentDb, getRepliesDb } from "../db/query.js";
 
 const factory = createFactory();
 

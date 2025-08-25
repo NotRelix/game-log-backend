@@ -5,9 +5,9 @@ import {
   editCommentDb,
   getCommentDb,
   getCommentsDb,
-} from "../db/query.ts";
-import { commentSchema } from "../validators/comment.ts";
-import { validator } from "../middleware/validator.ts";
+} from "../db/query.js";
+import { commentSchema } from "../validators/comment.js";
+import { validator } from "../middleware/validator.js";
 
 const factory = createFactory();
 

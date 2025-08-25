@@ -1,7 +1,7 @@
 import { createFactory } from "hono/factory";
-import { createCommentDb, deleteCommentDb, editCommentDb, getCommentDb, getCommentsDb, } from "../db/query.ts";
-import { commentSchema } from "../validators/comment.ts";
-import { validator } from "../middleware/validator.ts";
+import { createCommentDb, deleteCommentDb, editCommentDb, getCommentDb, getCommentsDb, } from "../db/query.js";
+import { commentSchema } from "../validators/comment.js";
+import { validator } from "../middleware/validator.js";
 const factory = createFactory();
 export const getCommentsHandler = factory.createHandlers(async (c) => {
     try {

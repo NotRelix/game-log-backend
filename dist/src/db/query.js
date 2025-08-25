@@ -1,6 +1,6 @@
 import { desc, eq, sql } from "drizzle-orm";
-import { db } from "./drizzle.ts";
-import { commentsTable, postsTable, repliesTable, usersTable, } from "./schema.ts";
+import { db } from "./drizzle.js";
+import { commentsTable, postsTable, repliesTable, usersTable, } from "./schema.js";
 export const getUserDb = async (username) => {
     const user = await db
         .select()
