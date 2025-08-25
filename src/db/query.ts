@@ -128,7 +128,15 @@ export const createCommentDb = async (
     .insert(commentsTable)
     .values({ comment, postId, authorId })
     .returning();
-  return createdComment[0] ?? null;
+  if (!createdComment) return null;
+  const newComment = await db.query.commentsTable.findFirst({
+    where: eq(commentsTable.id, createdComment[0].id),
+    with: {
+      replies: true,
+      author: { columns: { username: true } },
+    },
+  });
+  return newComment ?? null;
 };
 
 export const editCommentDb = async (
