@@ -94,4 +94,8 @@ export const repliesRelations = relations(repliesTable, ({ one }) => ({
     fields: [repliesTable.parentId],
     references: [commentsTable.id],
   }),
+  author: one(usersTable, {
+    fields: [repliesTable.authorId],
+    references: [usersTable.id],
+  }),
 }));

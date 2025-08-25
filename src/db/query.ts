@@ -164,10 +164,12 @@ export const deleteCommentDb = async (
 export const getRepliesDb = async (
   parentId: number
 ): Promise<SelectReplies[] | null> => {
-  const replies = await db
-    .select()
-    .from(repliesTable)
-    .where(eq(repliesTable.parentId, parentId));
+  const replies = await db.query.repliesTable.findMany({
+    where: eq(repliesTable.parentId, parentId),
+    with: {
+      author: { columns: { username: true } },
+    },
+  });
   return replies ?? null;
 };
 
@@ -186,7 +188,14 @@ export const createReplyDb = async (
       parentId,
     })
     .returning();
-  return newReply[0] ?? null;
+  if (!newReply) return null;
+  const createdReply = await db.query.repliesTable.findFirst({
+    where: eq(repliesTable.id, newReply[0].id),
+    with: {
+      author: { columns: { username: true } },
+    },
+  });
+  return createdReply ?? null;
 };
 
 export const getUserPostsDb = async (
