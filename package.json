@@ -2,9 +2,9 @@
   "name": "game-log-backend",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch src/index.js",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/index.ts",
     "db:reset": "tsx src/db/reset.ts"
   },
   "dependencies": {

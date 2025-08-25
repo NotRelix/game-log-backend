@@ -1,0 +1,10 @@
+import { Hono } from "hono";
+import { createReplyHandler, getRepliesHandler } from "../controllers/replies.ts";
+import { jwtMiddleware } from "../middleware/auth.ts";
+import { deleteCommentHandler, editCommentHandler, } from "../controllers/comments.ts";
+const app = new Hono();
+app.get("/replies", ...getRepliesHandler);
+app.post("/replies", jwtMiddleware, ...createReplyHandler);
+app.patch("/replies", jwtMiddleware, ...editCommentHandler);
+app.delete("/replies", jwtMiddleware, ...deleteCommentHandler);
+export default app;
