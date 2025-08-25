@@ -1,9 +1,33 @@
 import { zValidator } from "@hono/zod-validator";
 import { createFactory } from "hono/factory";
 import { commentSchema } from "../validators/comment.ts";
-import { createReplyDb, getCommentDb } from "../db/query.ts";
+import { createReplyDb, getCommentDb, getRepliesDb } from "../db/query.ts";
 
 const factory = createFactory();
+
+export const getRepliesHandler = factory.createHandlers(async (c) => {
+  try {
+    const postId = Number(c.req.param("postId"));
+    if (isNaN(postId)) {
+      return c.json({ success: false, messages: ["Invalid post id"] }, 400);
+    }
+    const parentId = Number(c.req.param("commentId"));
+    if (isNaN(parentId)) {
+      return c.json({ success: false, messages: ["Invalid parent id"] }, 400);
+    }
+    const replies = await getRepliesDb(parentId);
+    return c.json(
+      {
+        success: true,
+        messages: ["Successfully fetched replies"],
+        replies: replies,
+      },
+      200
+    );
+  } catch (err) {
+    return c.json({ success: false, messages: ["Failed to get replies"] }, 500);
+  }
+});
 
 export const createReplyHandler = factory.createHandlers(
   zValidator("json", commentSchema),

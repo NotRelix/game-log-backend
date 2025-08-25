@@ -161,6 +161,16 @@ export const deleteCommentDb = async (
   return deletedComment[0] ?? null;
 };
 
+export const getRepliesDb = async (
+  parentId: number
+): Promise<SelectReplies[] | null> => {
+  const replies = await db
+    .select()
+    .from(repliesTable)
+    .where(eq(repliesTable.parentId, parentId));
+  return replies ?? null;
+};
+
 export const createReplyDb = async (
   comment: string,
   postId: number,
