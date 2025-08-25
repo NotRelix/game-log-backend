@@ -7,9 +7,9 @@ import {
   getEditorsPostsDb,
   getPostDb,
   getPostsDb,
-} from "../db/query.ts";
-import { postSchema } from "../validators/post.ts";
-import supabase from "../../config/supabase.ts";
+} from "../db/query.js";
+import { postSchema } from "../validators/post.js";
+import supabase from "../../config/supabase.js";
 
 const factory = createFactory();
 

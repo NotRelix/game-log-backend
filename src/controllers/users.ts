@@ -1,7 +1,7 @@
 import { createFactory } from "hono/factory";
-import { db } from "../db/drizzle.ts";
-import { usersTable } from "../db/schema.ts";
-import { getUserPostsDb } from "../db/query.ts";
+import { db } from "../db/drizzle.js";
+import { usersTable } from "../db/schema.js";
+import { getUserPostsDb } from "../db/query.js";
 
 const factory = createFactory();
 

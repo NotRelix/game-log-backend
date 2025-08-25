@@ -1,7 +1,7 @@
 import { createFactory } from "hono/factory";
-import { createPostDb, deletePostDb, editPostDb, getEditorsPostsDb, getPostDb, getPostsDb, } from "../db/query.ts";
-import { postSchema } from "../validators/post.ts";
-import supabase from "../../config/supabase.ts";
+import { createPostDb, deletePostDb, editPostDb, getEditorsPostsDb, getPostDb, getPostsDb, } from "../db/query.js";
+import { postSchema } from "../validators/post.js";
+import supabase from "../../config/supabase.js";
 const factory = createFactory();
 export const getPostsHandler = factory.createHandlers(async (c) => {
     try {

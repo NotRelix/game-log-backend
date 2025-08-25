@@ -1,8 +1,8 @@
 import { createFactory } from "hono/factory";
-import { userSchema } from "../validators/user.ts";
-import { getUserDb, insertUserDb } from "../db/query.ts";
+import { userSchema } from "../validators/user.js";
+import { getUserDb, insertUserDb } from "../db/query.js";
 import bcrypt from "bcrypt";
-import { validator } from "../middleware/validator.ts";
+import { validator } from "../middleware/validator.js";
 const factory = createFactory();
 export const registerUserHandler = factory.createHandlers(validator(userSchema), async (c) => {
     try {

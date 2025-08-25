@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
-import { db } from "./drizzle.ts";
-import { postsTable, rolesTable, usersTable } from "./schema.ts";
+import { db } from "./drizzle.js";
+import { postsTable, rolesTable, usersTable } from "./schema.js";
 
 const roles = [{ role: "admin" }, { role: "user" }, { role: "author" }];
 

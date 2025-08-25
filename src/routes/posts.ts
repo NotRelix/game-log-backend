@@ -5,9 +5,9 @@ import {
   editPostHandler,
   getPostHandler,
   getPostsHandler,
-} from "../controllers/posts.ts";
-import { jwtMiddleware } from "../middleware/auth.ts";
-import comments from "./comments.ts";
+} from "../controllers/posts.js";
+import { jwtMiddleware } from "../middleware/auth.js";
+import comments from "./comments.js";
 
 const app = new Hono();
 

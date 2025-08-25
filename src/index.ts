@@ -1,11 +1,11 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import auth from "./routes/auth.ts";
-import users from "./routes/users.ts";
-import register from "./routes/register.ts";
-import login from "./routes/login.ts";
-import posts from "./routes/posts.ts";
-import type { Variables } from "./types/env.ts";
+import auth from "./routes/auth.js";
+import users from "./routes/users.js";
+import register from "./routes/register.js";
+import login from "./routes/login.js";
+import posts from "./routes/posts.js";
+import type { Variables } from "./types/env.js";
 import { cors } from "hono/cors";
 
 const app = new Hono<{ Variables: Variables }>();

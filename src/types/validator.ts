@@ -1,6 +1,6 @@
-import type { commentSchema } from "../validators/comment.ts";
-import type { postSchema } from "../validators/post.ts";
-import type { userSchema } from "../validators/user.ts";
+import type { commentSchema } from "../validators/comment.js";
+import type { postSchema } from "../validators/post.js";
+import type { userSchema } from "../validators/user.js";
 
 export type userSchemaType = typeof userSchema;
 export type postSchemaType = typeof postSchema;

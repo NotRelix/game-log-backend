@@ -1,9 +1,9 @@
 import { createFactory } from "hono/factory";
-import { userSchema } from "../validators/user.ts";
-import { getUserDb, insertUserDb } from "../db/query.ts";
-import type { InsertUser } from "../db/types.ts";
+import { userSchema } from "../validators/user.js";
+import { getUserDb, insertUserDb } from "../db/query.js";
+import type { InsertUser } from "../db/types.js";
 import bcrypt from "bcrypt";
-import { validator } from "../middleware/validator.ts";
+import { validator } from "../middleware/validator.js";
 
 const factory = createFactory();
 

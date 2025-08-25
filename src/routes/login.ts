@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { loginUserHandler } from "../controllers/login.ts";
+import { loginUserHandler } from "../controllers/login.js";
 
 const app = new Hono();
 
