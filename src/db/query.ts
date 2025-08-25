@@ -97,6 +97,7 @@ export const getCommentsDb = async (
     where: eq(commentsTable.postId, postId),
     with: {
       replies: true,
+      author: { columns: { username: true } },
     },
     orderBy: (comments, { desc }) => [desc(commentsTable.createdAt)],
   });
